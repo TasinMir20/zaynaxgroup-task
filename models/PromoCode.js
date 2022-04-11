@@ -23,6 +23,10 @@ const PromoCodeSchema = new Schema(
 			type: Number,
 			required: true,
 		},
+		usedTime: {
+			type: Number,
+			default: 0,
+		},
 		active: {
 			type: String,
 			enum: ["yes", "no"],
