@@ -392,6 +392,55 @@ exports.promoCodesEdit = async (req, res, next) => {
 	}
 };
 
+exports.promoCodesActiveDeactive = async (req, res, next) => {
+	let { active } = req.body;
+	let { promoCodeId } = req.params;
+	try {
+		const issue = {};
+
+		let isValidPromoCodeId, isValidActive;
+
+		if (isValidObjectId(promoCodeId)) {
+			const isExistPromoCode = await PromoCode.exists({ _id: promoCodeId });
+
+			if (isExistPromoCode) {
+				isValidPromoCodeId = true;
+			} else {
+				issue.promoCodeId = "Promo code doesn't exists!";
+			}
+		} else {
+			issue.promoCodeId = "Invalid promo code id!";
+		}
+
+		// promo code active validation
+		active = active ? active.toLowerCase() : active;
+		if (active) {
+			if (["yes", "no"].includes(active)) {
+				isValidActive = true;
+			} else {
+				issue.active = "Invalid promo code active key!";
+			}
+		} else {
+			issue.active = "Please provide promo code active keyword!";
+		}
+
+		const propertiesValid = isValidPromoCodeId && isValidActive;
+
+		if (propertiesValid) {
+			const promoCodeUpdate = await PromoCode.updateOne({ _id: promoCodeId }, { active });
+			if (promoCodeUpdate.modifiedCount) {
+				const state = active === "yes" ? "activated" : "deactivated";
+				return res.json({ message: `Promo code successfully ${state}!`, msg: state });
+			} else {
+				issue.message = "Failed to update!";
+			}
+		}
+		return res.status(400).json({ issue });
+	} catch (err) {
+		next(err);
+	}
+};
+
 exports.orders = async (req, res, next) => {
 	let { skip, limit, status } = req.query;
 	try {
