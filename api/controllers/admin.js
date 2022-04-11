@@ -1,5 +1,6 @@
 const Product = require("../../models/Product");
 const PromoCode = require("../../models/PromoCode");
+const Order = require("../../models/Order");
 
 const { imageCheck, upload } = require("../../utils/file");
 
@@ -303,6 +304,32 @@ exports.promoCodesAdd = async (req, res, next) => {
 
 			return res.status(201).json({ addedPromoCode: promoCodeSave });
 		}
+		return res.status(400).json({ issue });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.orders = async (req, res, next) => {
+	let { skip, limit, status } = req.query;
+	try {
+		const issue = {};
+		skip = parseInt(skip, 10) || 0;
+		limit = parseInt(limit, 10) || 20;
+
+		status = status ? status.toLowerCase() : status;
+		if (status) {
+			if (["pending", "confirmed", "canceled"].includes(status)) {
+				const getOrder = await Order.find({ status }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+				return res.json({ order: getOrder });
+			} else {
+				issue.message = "Invalid status keyword!- allowed status query keyword is- pending, confirmed, canceled";
+			}
+		} else {
+			const getOrder = await Order.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+			return res.json({ order: getOrder });
+		}
+
 		return res.status(400).json({ issue });
 	} catch (err) {
 		next(err);
