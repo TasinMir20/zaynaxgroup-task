@@ -1,3 +1,4 @@
+const { isValidObjectId } = require("mongoose");
 const Product = require("../../models/Product");
 const PromoCode = require("../../models/PromoCode");
 const Order = require("../../models/Order");
@@ -328,6 +329,37 @@ exports.orders = async (req, res, next) => {
 		} else {
 			const getOrder = await Order.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
 			return res.json({ order: getOrder });
+		}
+
+		return res.status(400).json({ issue });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.ordersAction = async (req, res, next) => {
+	const user = req.user;
+	let { orderObjId, status } = req.params;
+	try {
+		const issue = {};
+
+		if (isValidObjectId(orderObjId)) {
+			status = status ? status.toLowerCase() : status;
+			if (status) {
+				if (["confirmed", "canceled"].includes(status)) {
+					const orderUpdate = await Order.updateOne({ _id: orderObjId }, { status, reviewedBy: user._id });
+
+					if (orderUpdate.modifiedCount) {
+						return res.json({ message: `Order successfully ${status}!` });
+					}
+				} else {
+					issue.message = "Invalid status keyword!- allowed status query keyword is- confirmed, canceled";
+				}
+			} else {
+				issue.message = "Please provide status keyword!";
+			}
+		} else {
+			issue.message = "Invalid order id!";
 		}
 
 		return res.status(400).json({ issue });
