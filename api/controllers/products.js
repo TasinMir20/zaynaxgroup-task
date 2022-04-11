@@ -8,21 +8,27 @@ exports.products = async (req, res, next) => {
 		skip = parseInt(skip, 10) || 0;
 		limit = parseInt(limit, 10) || 20;
 
+		let foundProducts = [];
 		if (search) {
 			function es(str) {
 				return str.replace(/[-\/\\^$*+?()|[\]{}]/g, "");
 			}
 			const KeyWordRegExp = new RegExp(".*" + es(search) + ".*", "i");
 
-			const foundProducts = await Product.find({ $and: [{ active: "yes" }, { name: KeyWordRegExp }] })
+			foundProducts = await Product.find({ $and: [{ active: "yes" }, { name: KeyWordRegExp }] })
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit);
-			return res.json({ products: foundProducts });
 		} else {
-			const getProduct = await Product.find({ active: "yes" }).sort({ createdAt: -1 }).skip(skip).limit(limit);
-			return res.json({ products: getProduct });
+			foundProducts = await Product.find({ active: "yes" }).sort({ createdAt: -1 }).skip(skip).limit(limit);
 		}
+
+		foundProducts = JSON.parse(JSON.stringify(foundProducts));
+		for (const product of foundProducts) {
+			product.priceAfterDiscount = product.price - (product.discountRate / 100) * product.price;
+		}
+
+		return res.json({ products: foundProducts });
 	} catch (err) {
 		next(err);
 	}
