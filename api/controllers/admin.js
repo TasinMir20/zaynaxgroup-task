@@ -497,3 +497,23 @@ exports.ordersAction = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.products = async (req, res, next) => {
+	try {
+		let { skip, limit, search } = req.query;
+
+		skip = parseInt(skip, 10) || 0;
+		limit = parseInt(limit, 10) || 20;
+
+		let foundProducts = await Product.find({ active: "yes" }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+		foundProducts = JSON.parse(JSON.stringify(foundProducts));
+
+		for (const product of foundProducts) {
+			product.priceAfterDiscount = product.price - (product.discountRate / 100) * product.price;
+		}
+
+		return res.json({ products: foundProducts });
+	} catch (err) {
+		next(err);
+	}
+};
