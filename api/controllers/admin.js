@@ -42,7 +42,7 @@ exports.productsAdd = async (req, res, next) => {
 		}
 
 		// product discountRate validation
-		if (discountRate !== undefined || discountRate !== "") {
+		if (discountRate !== undefined && discountRate !== "") {
 			if (String(Number(discountRate)) !== "NaN") {
 				discountRate = Math.abs(discountRate);
 				if (discountRate <= 100 && discountRate >= 0) {
@@ -58,7 +58,7 @@ exports.productsAdd = async (req, res, next) => {
 		}
 
 		// product shippingCharge validation
-		if (shippingCharge !== undefined || shippingCharge !== "") {
+		if (shippingCharge !== undefined && shippingCharge !== "") {
 			if (String(Number(shippingCharge)) !== "NaN") {
 				shippingCharge = Math.abs(shippingCharge);
 				isValidShippingCharge = true;
@@ -254,7 +254,7 @@ exports.promoCodesAdd = async (req, res, next) => {
 		}
 
 		// discountRate validation
-		if (discountRate !== undefined || discountRate !== "") {
+		if (discountRate !== undefined && discountRate !== "") {
 			if (String(Number(discountRate)) !== "NaN") {
 				discountRate = Math.abs(discountRate);
 				if (discountRate <= 100 && discountRate >= 0) {
@@ -270,7 +270,7 @@ exports.promoCodesAdd = async (req, res, next) => {
 		}
 
 		// promo code use Time Limit validation
-		if (useTimeLimit !== undefined || useTimeLimit !== "") {
+		if (useTimeLimit !== undefined && useTimeLimit !== "") {
 			if (String(Number(useTimeLimit)) !== "NaN") {
 				useTimeLimit = Math.abs(useTimeLimit);
 				isValidUseTimeLimit = true;
@@ -304,6 +304,87 @@ exports.promoCodesAdd = async (req, res, next) => {
 			const promoCodeSave = await promoCodeStructure.save();
 
 			return res.status(201).json({ addedPromoCode: promoCodeSave });
+		}
+		return res.status(400).json({ issue });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.promoCodesEdit = async (req, res, next) => {
+	let { endDate, discountRate, useTimeLimit } = req.body;
+	let { promoCodeId } = req.params;
+	try {
+		const issue = {};
+
+		let isValidPromoCodeId, isValidEndDate, isValidDiscountRate, isValidUseTimeLimit;
+
+		if (isValidObjectId(promoCodeId)) {
+			const isExistPromoCode = await PromoCode.exists({ _id: promoCodeId });
+
+			if (isExistPromoCode) {
+				isValidPromoCodeId = true;
+			} else {
+				issue.promoCodeId = "Promo code doesn't exists!";
+			}
+		} else {
+			issue.promoCodeId = "Invalid promo code id!";
+		}
+
+		// endDate date time validation
+		if (endDate) {
+			if (String(Number(endDate)) !== "NaN") {
+				endDate = Number(endDate);
+			}
+
+			const validTimestamp = new Date(endDate).getTime() > 0;
+			if (validTimestamp) {
+				isValidEndDate = true;
+			} else {
+				issue.endDate = "Please provide a valid end date of the promo code";
+			}
+		} else {
+			issue.endDate = "Please provide promo code using end date!";
+		}
+
+		// discountRate validation
+		if (discountRate !== undefined && discountRate !== "") {
+			if (String(Number(discountRate)) !== "NaN") {
+				discountRate = Math.abs(discountRate);
+				if (discountRate <= 100 && discountRate >= 0) {
+					isValidDiscountRate = true;
+				} else {
+					issue.discountRate = "Discount rate could be 0 - 100!";
+				}
+			} else {
+				issue.discountRate = "Invalid discount rate!";
+			}
+		} else {
+			issue.discountRate = "Please provide promo code discount rate!";
+		}
+
+		// promo code use Time Limit validation
+
+		if (useTimeLimit !== undefined && useTimeLimit !== "") {
+			if (String(Number(useTimeLimit)) !== "NaN") {
+				useTimeLimit = Math.abs(useTimeLimit);
+				isValidUseTimeLimit = true;
+			} else {
+				issue.useTimeLimit = "Invalid use time!";
+			}
+		} else {
+			issue.useTimeLimit = "Please provide use time!";
+		}
+
+		const promoCodePropertiesValid = isValidPromoCodeId && isValidEndDate && isValidDiscountRate && isValidUseTimeLimit;
+
+		if (promoCodePropertiesValid) {
+			const promoCodeUpdate = await PromoCode.updateOne({ _id: promoCodeId }, { endDate, discountRate, useTimeLimit });
+			if (promoCodeUpdate.modifiedCount) {
+				return res.json({ message: "Promo code update successfully!" });
+			} else {
+				issue.message = "Failed to update!";
+			}
 		}
 		return res.status(400).json({ issue });
 	} catch (err) {
