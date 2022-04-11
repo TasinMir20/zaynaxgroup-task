@@ -14,10 +14,13 @@ exports.products = async (req, res, next) => {
 			}
 			const KeyWordRegExp = new RegExp(".*" + es(search) + ".*", "i");
 
-			const foundProducts = await Product.find({ name: KeyWordRegExp }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+			const foundProducts = await Product.find({ $and: [{ active: "yes" }, { name: KeyWordRegExp }] })
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit);
 			return res.json({ products: foundProducts });
 		} else {
-			const getProduct = await Product.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+			const getProduct = await Product.find({ active: "yes" }).sort({ createdAt: -1 }).skip(skip).limit(limit);
 			return res.json({ products: getProduct });
 		}
 	} catch (err) {
