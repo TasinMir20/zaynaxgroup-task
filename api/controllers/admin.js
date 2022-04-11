@@ -186,6 +186,20 @@ exports.productsAdd = async (req, res, next) => {
 	}
 };
 
+exports.promoCodes = async (req, res, next) => {
+	try {
+		let { skip, limit } = req.query;
+
+		skip = parseInt(skip, 10) || 0;
+		limit = parseInt(limit, 10) || 20;
+
+		const getPromoCode = await PromoCode.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+		return res.json({ promoCode: getPromoCode });
+	} catch (err) {
+		next(err);
+	}
+};
+
 exports.promoCodesAdd = async (req, res, next) => {
 	let { theCode, startDate, endDate, discountRate, useTimeLimit, active } = req.body;
 	try {
