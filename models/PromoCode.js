@@ -3,8 +3,9 @@ const { Schema, model } = require("mongoose");
 const PromoCodeSchema = new Schema(
 	{
 		code: {
-			type: Number,
+			type: String,
 			required: true,
+			unique: true,
 		},
 		startDate: {
 			type: Date,

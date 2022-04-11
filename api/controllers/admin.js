@@ -1,4 +1,5 @@
 const Product = require("../../models/Product");
+const PromoCode = require("../../models/PromoCode");
 
 const { imageCheck, upload } = require("../../utils/file");
 
@@ -39,7 +40,7 @@ exports.productsAdd = async (req, res, next) => {
 		}
 
 		// product discountRate validation
-		if (discountRate) {
+		if (discountRate !== undefined || discountRate !== "") {
 			if (String(Number(discountRate)) !== "NaN") {
 				discountRate = Math.abs(discountRate);
 				if (discountRate <= 100 && discountRate >= 0) {
@@ -55,7 +56,7 @@ exports.productsAdd = async (req, res, next) => {
 		}
 
 		// product shippingCharge validation
-		if (shippingCharge) {
+		if (shippingCharge !== undefined || shippingCharge !== "") {
 			if (String(Number(shippingCharge)) !== "NaN") {
 				shippingCharge = Math.abs(shippingCharge);
 				isValidShippingCharge = true;
@@ -178,6 +179,115 @@ exports.productsAdd = async (req, res, next) => {
 
 				return res.status(201).json({ addedProduct: productSave });
 			}
+		}
+		return res.status(400).json({ issue });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.promoCodesAdd = async (req, res, next) => {
+	let { theCode, startDate, endDate, discountRate, useTimeLimit, active } = req.body;
+	try {
+		const issue = {};
+
+		let isValidTheCode, isValidStartDate, isValidEndDate, isValidDiscountRate, isValidUseTimeLimit, isValidActive;
+
+		// Promo Code validation
+		if (theCode) {
+			const isExistSamePromoCode = await PromoCode.exists({ code: theCode });
+
+			if (!isExistSamePromoCode) {
+				isValidTheCode = true;
+			} else {
+				issue.theCode = "The same Promo Code is already created!";
+			}
+		} else {
+			issue.theCode = "Please provide Promo Code !";
+		}
+
+		// startDate date time validation
+		if (startDate) {
+			if (String(Number(startDate)) !== "NaN") {
+				startDate = Number(startDate);
+			}
+			const validTimestamp = new Date(startDate).getTime() > 0;
+			if (validTimestamp) {
+				isValidStartDate = true;
+			} else {
+				issue.startDate = "Please provide a valid start date of the promo code!";
+			}
+		} else {
+			issue.startDate = "Please provide promo code using start date!";
+		}
+
+		// endDate date time validation
+		if (endDate) {
+			if (String(Number(endDate)) !== "NaN") {
+				endDate = Number(endDate);
+			}
+
+			const validTimestamp = new Date(endDate).getTime() > 0;
+			if (validTimestamp) {
+				isValidEndDate = true;
+			} else {
+				issue.endDate = "Please provide a valid end date of the promo code";
+			}
+		} else {
+			issue.endDate = "Please provide promo code using end date!";
+		}
+
+		// discountRate validation
+		if (discountRate !== undefined || discountRate !== "") {
+			if (String(Number(discountRate)) !== "NaN") {
+				discountRate = Math.abs(discountRate);
+				if (discountRate <= 100 && discountRate >= 0) {
+					isValidDiscountRate = true;
+				} else {
+					issue.discountRate = "Discount rate could be 0 - 100!";
+				}
+			} else {
+				issue.discountRate = "Invalid discount rate!";
+			}
+		} else {
+			issue.discountRate = "Please provide promo code discount rate!";
+		}
+
+		// promo code use Time Limit validation
+		if (useTimeLimit !== undefined || useTimeLimit !== "") {
+			if (String(Number(useTimeLimit)) !== "NaN") {
+				useTimeLimit = Math.abs(useTimeLimit);
+				isValidUseTimeLimit = true;
+			} else {
+				issue.useTimeLimit = "Invalid use time!";
+			}
+		} else {
+			issue.useTimeLimit = "Please provide use time!";
+		}
+
+		// promo code active validation
+		active = active ? active.toLowerCase() : active;
+		if (["yes", "no"].includes(active) || active === undefined || active === "") {
+			isValidActive = true;
+		} else {
+			issue.active = "Invalid promo code active key!";
+		}
+
+		const promoCodePropertiesValid = isValidTheCode && isValidStartDate && isValidEndDate && isValidDiscountRate && isValidUseTimeLimit && isValidActive;
+
+		if (promoCodePropertiesValid) {
+			const promoCodeStructure = new PromoCode({
+				code: theCode,
+				startDate,
+				endDate,
+				discountRate,
+				useTimeLimit,
+				active,
+			});
+
+			const promoCodeSave = await promoCodeStructure.save();
+
+			return res.status(201).json({ addedPromoCode: promoCodeSave });
 		}
 		return res.status(400).json({ issue });
 	} catch (err) {
