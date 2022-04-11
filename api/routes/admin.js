@@ -1,7 +1,10 @@
 const adminRouter = require("express").Router();
 
-const { admin } = require("../controllers/admin");
+const acceptFile = require("connect-multiparty");
+
+const { admin, productsAdd } = require("../controllers/admin");
 
 adminRouter.get("/", admin);
+adminRouter.post("/products-add", acceptFile(), productsAdd);
 
 module.exports = adminRouter;

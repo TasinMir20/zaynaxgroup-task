@@ -15,8 +15,8 @@ router.use("/api", apiRoutes); // rest api routes
 // catch 404 and forward to error handler
 router.use((req, res, next) => {
 	return res.status(404).json({
-		error: {
-			issue: "404 | Resource not found.",
+		issue: {
+			message: "404 | Resource not found.",
 		},
 	});
 });
@@ -26,12 +26,12 @@ router.use((err, req, res, next) => {
 	console.error(err);
 
 	const statusCode = err.status || 500;
-	const error = {};
+	const issue = {};
 
-	error.issue = `${statusCode} | ${err.message}`;
-	error.stack = process.env.NODE_ENV !== "production" ? err.stack : "You have no rights to see details.";
+	issue.message = `${statusCode} | ${err.message}`;
+	issue.stack = process.env.NODE_ENV !== "production" ? err.stack : "You have no rights to see details.";
 
-	return res.status(statusCode).json({ error });
+	return res.status(statusCode).json({ issue });
 });
 
 module.exports = router;

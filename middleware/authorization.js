@@ -80,3 +80,34 @@ exports.adminAuthorization = async (req, res, next) => {
 		next(err);
 	}
 };
+
+exports.anonymousOrNot = async (req, res, next) => {
+	try {
+		const issue = {};
+		let token = req.headers.authorization;
+		if (token) {
+			token = token.split(" ")[1];
+			const jwt_payload = parseJWT(token);
+
+			if (isValidObjectId(jwt_payload.sessionId)) {
+				const loginSession = await LoginSession.findOne({
+					$and: [{ _id: jwt_payload.sessionId }, { sessionUUID: jwt_payload.sessionUUID }],
+				}).populate({
+					path: "user",
+					select: "+emailVerified +phoneVerified",
+				});
+
+				if (loginSession) {
+					if (loginSession.user) {
+						const user = loginSession.user;
+						req.user = user;
+					}
+				}
+			}
+		}
+
+		return next();
+	} catch (err) {
+		next(err);
+	}
+};
