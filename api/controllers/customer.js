@@ -1,4 +1,7 @@
+const { isValidObjectId } = require("mongoose");
+const Product = require("../../models/Product");
 const PromoCode = require("../../models/PromoCode");
+const Order = require("../../models/Order");
 
 exports.customer = async (req, res, next) => {
 	try {
@@ -40,6 +43,79 @@ exports.applyPromoCode = async (req, res, next) => {
 			}
 		} else {
 			issue.message = "Please Enter promo code!";
+		}
+
+		return res.status(400).json({ issue });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.checkout = async (req, res, next) => {
+	const { products, promoCode } = req.body;
+	const user = req.user;
+	try {
+		const issue = {};
+		if (Array.isArray(products) && products.length > 0) {
+			let orderPlacedCount = 0;
+			for (const product of products) {
+				if (isValidObjectId(product.id)) {
+					const findProduct = await Product.findOne({ _id: product.id });
+
+					if (findProduct) {
+						// unique Id generate
+						async function getUniqueRandNum() {
+							function randomGen() {
+								const length = 6;
+								let randNum = "";
+								const characters = "0123456789";
+								const charactersLength = characters.length;
+								for (let i = 0; i < length; i++) {
+									randNum += characters.charAt(Math.floor(Math.random() * charactersLength));
+								}
+								return Number(randNum);
+							}
+							let num;
+							while (true) {
+								num = randomGen();
+								const exist = await Order.exists({ orderId: num });
+								if (!exist) {
+									break;
+								}
+								console.log("Looping to generate random unique id Order");
+							}
+							return num;
+						}
+						const uniqueRandomId = await getUniqueRandNum();
+
+						const orderStructure = new Order({
+							orderId: uniqueRandomId,
+							sl: Math.abs(parseInt(product.quantity, 10) || 1),
+							product: findProduct._id,
+							price: findProduct.price,
+							orderBy: user._id,
+						});
+
+						await orderStructure.save();
+						orderPlacedCount++;
+
+						// promo code usedTime increment
+						if (promoCode) {
+							await PromoCode.updateOne({ code: promoCode }, { $inc: { usedTime: 1 } });
+						}
+					} else {
+						issue.message = "Your chosen product no more exists!";
+					}
+				} else {
+					issue.message = "Invalid order id!";
+				}
+			}
+
+			if (orderPlacedCount) {
+				return res.status(201).json({ message: "Order successfully placed!" });
+			}
+		} else {
+			issue.message = "Please provide a products";
 		}
 
 		return res.status(400).json({ issue });
