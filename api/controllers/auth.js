@@ -85,7 +85,7 @@ exports.loginRegister = async (req, res, next) => {
 			}
 
 			if (!password) {
-				issue.phone = "Please enter password!";
+				issue.password = "Please enter password!";
 			}
 		}
 

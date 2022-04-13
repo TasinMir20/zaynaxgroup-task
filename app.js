@@ -8,6 +8,10 @@ require("dotenv").config();
 require("./config/cloudinary")(); // configured cloudinary
 const app = express();
 
+// Setup view/template engine
+app.set("view engine", "ejs");
+app.set("views", "views");
+
 const { DB_URI_CLOUD, NODE_ENV, PORT } = process.env;
 
 // Middleware Array

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="/fontawesome-free-6.1.1-web/css/all.min.css" />
+		<link rel="stylesheet" href="/css/home.css" />
+	</head>
+	<body>
+		<%- include("../partials/search-header.ejs") %>
+		<section class="sections body-content">
+			<div class="container">
+				<div class="products default-product">
+					<div class="warp">
+						<!-- <div class="item">
+							<div class="image-warp">
+								<img src="/images/c.jpg" alt="" />
+							</div>
+							<div class="content">
+								<p class="product-name">Camera</p>
+								<div class="rate-wrap">
+									<p class="price">
+										<span class="currency">BDT.</span>
+										<span class="amount">2000</span>
+									</p>
+									<p class="discount-rate">
+										<span class="rate">10</span>
+										<span class="percentage">%</span>
+									</p>
+								</div>
+							</div>
+							<div class="overlay">
+								<button class="btn-add-to-cart">Add to card</button>
+							</div>
+						</div> -->
+					</div>
+				</div>
+				<div class="products searched-product hide">
+					<div class="warp"></div>
+				</div>
+			</div>
+		</section>
+		<section class="sections checkout-page hide">
+			<div class="container">
+				<div class="go-back">
+					<a href="/">Go Back</a>
+				</div>
+				<div class="checkout-body">
+					<div class="product-details">
+						<div class="product-details-wrap">
+							<!-- <div class="item">
+								<div class="inner-part part1">
+									<div class="img">
+										<img src="/images/c.jpg" alt="" />
+									</div>
+									<div class="product-data">
+										<div class="product-name value">Camera</div>
+										<div class="other-data">
+											<div class="color-size-wrap">
+												<div class="color">
+													<span>Color:</span>
+													<span class="value">Red</span>
+												</div>
+												<div class="size">
+													<span>Size:</span>
+													<span class="value">Xl</span>
+												</div>
+											</div>
+											<div class="price">
+												<span>Product Price: BDT.</span>
+												<span class="value">200</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="inner-part part">
+									<div class="part-inner">
+										<div class="one">Shopping Method: EMS</div>
+										<div class="two">Shopping Charge: BDT. 200</div>
+									</div>
+								</div>
+								<div class="inner-part part">
+									<div class="part-inner">
+										<div class="quantity">
+											<p>Quantity:</p>
+											<div class="inc">
+												<div class="increment inc-dec">-</div>
+												<div class="inc-element">1</div>
+												<div class="decrement inc-dec">+</div>
+											</div>
+										</div>
+										<div>Total Price: BDT. 2,100</div>
+									</div>
+								</div>
+								<i onclick="removeToCart()" class="remove fa-regular fa-trash-can"></i>
+							</div> -->
+						</div>
+						<div class="terms-contions">
+							<div class="select">
+								<input type="radio" id="select" />
+								<label for="select">I agree to the Terms and Conditions, Privacy Policy & Refund Policy.</label>
+							</div>
+							<button id="checkout-button">CHECKOUT</button>
+						</div>
+					</div>
+					<div class="order-details">
+						<div class="order-details-inner">
+							<h4 class="head">Order Summary</h4>
+							<div class="part part1">
+								<div class="subtotal part-in">
+									<p>Subtotal (<span class="item-count">0</span><span> Item</span>)</p>
+									<p class="value">0</p>
+								</div>
+								<div class="discount part-in">
+									<p>Discount</p>
+									<p class="value">0</p>
+								</div>
+								<div class="shipping-charge part-in">
+									<p>Shipping Charge</p>
+									<p class="value">0</p>
+								</div>
+								<div class="wallet-debit part-in">
+									<p>Wallet Debit</p>
+									<p class="value">0</p>
+								</div>
+							</div>
+							<div class="part part2 promo-code">
+								<div class="promo-wrap">
+									<input id="promo-code" type="text" placeholder="Type your code" />
+									<button id="apply-promo-code">Apply</button>
+								</div>
+								<span class="msg-show msg"></span>
+							</div>
+							<div class="part part3 total-payable">
+								<div class="total-inner">
+									<p>Total Payable</p>
+									<p class="value">0</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section class="sections login-page hide">
+			<div class="login-form-warp">
+				<form>
+					<div class="part phone-wrap">
+						<div><label for="phone">Phone Number</label></div>
+						<div class="input-wrap"><input id="phone" type="text" /></div>
+						<span class="msg"></span>
+					</div>
+					<div class="part password-wrap">
+						<div><label for="password">Password</label></div>
+						<div class="input-wrap"><input id="password" type="password" /></div>
+						<span class="msg"></span>
+					</div>
+					<div class="part">
+						<div class="input-wrap"><button id="login">Sign Up</button></div>
+					</div>
+					<i class="cross fa-solid fa-xmark"></i>
+				</form>
+			</div>
+		</section>
+		<section class="sections order-place-msg hide">
+			<div class="popup-background">
+				<div class="popup-msg-of-order-palce">
+					<div class="icon">
+						<i class="fa-solid fa-circle-check"></i>
+					</div>
+					<div class="msg">Your Order Placed Successfully</div>
+					<div class="button">
+						<a href="/admin">Go to Admin panel</a>
+					</div>
+				</div>
+			</div>
+		</section>
+		<script src="/script/script.js"></script>
+	</body>
+</html>

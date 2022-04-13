@@ -1,16 +1,10 @@
 const router = require("express").Router();
 
+const frontEndRoutes = require("./frontEndRoutes");
 const apiRoutes = require("../api/routes/index");
 
-router.get("/", (req, res, next) => {
-	try {
-		return res.send("Server running");
-	} catch (err) {
-		next(err);
-	}
-});
-
 router.use("/api", apiRoutes); // rest api routes
+router.use("/", frontEndRoutes); // Front-End render with ejs
 
 // catch 404 and forward to error handler
 router.use((req, res, next) => {

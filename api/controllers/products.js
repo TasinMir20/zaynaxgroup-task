@@ -51,10 +51,15 @@ exports.cartList = async (req, res, next) => {
 			}
 		}
 
-		const getProduct = await Product.find({ _id: { $in: validIds } })
+		let getProduct = await Product.find({ _id: { $in: validIds } })
 			.sort({ createdAt: -1 })
 			.skip(skip)
 			.limit(limit);
+
+		getProduct = JSON.parse(JSON.stringify(getProduct));
+		for (const product of getProduct) {
+			product.priceAfterDiscount = product.price - (product.discountRate / 100) * product.price;
+		}
 
 		return res.json({ products: getProduct });
 	} catch (err) {
