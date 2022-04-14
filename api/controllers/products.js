@@ -6,7 +6,7 @@ exports.products = async (req, res, next) => {
 		let { skip, limit, search } = req.query;
 
 		skip = parseInt(skip, 10) || 0;
-		limit = parseInt(limit, 10) || 20;
+		limit = parseInt(limit, 10) || 100;
 
 		let foundProducts = [];
 		if (search) {
@@ -39,7 +39,7 @@ exports.cartList = async (req, res, next) => {
 		let { skip, limit, productIds } = req.query;
 
 		skip = parseInt(skip, 10) || 0;
-		limit = parseInt(limit, 10) || 20;
+		limit = parseInt(limit, 10) || 200;
 
 		productIds = productIds.replace(/]+/g, "").replace(/\[+/g, "").replace(/"+/g, "");
 		productIds = productIds.split(",");

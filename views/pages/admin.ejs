@@ -36,9 +36,9 @@
 						<div class="info">
 							<h4>Use following credentials to login</h4>
 							<h4>User ID</h4>
-							<h5>Test_User2020</h5>
+							<h5><%= process.env.adminPanelUsername %></h5>
 							<h4>Password</h4>
-							<h5>Easy_123</h5>
+							<h5><%= process.env.adminPanelPassword %></h5>
 						</div>
 					</div>
 				</div>
@@ -73,7 +73,7 @@
 						</div>
 					</div>
 					<div class="right-side side">
-						<div class="order-section">
+						<div class="order-section hide">
 							<div class="load-buttons">
 								<div class="btn all" onclick="orderListLoad()">All</div>
 								<div class="btn pending" onclick="orderListLoad('pending')">Pending</div>
@@ -98,6 +98,99 @@
 											<button id="do-cancel">Cancel</button>
 										</div>
 										<div class="status">Pending</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="product-section hide">
+							<div class="product-add hide">
+								<div class="inner">
+									<form action="" id="product-add-form" method="post" enctype="multipart/form-data">
+										<div class="input-wrap image">
+											<div class="img-select">
+												<h5>Upload Product Image</h5>
+												<p>Image Size Must be</p>
+												<p>500x500</p>
+											</div>
+											<input id="product-image" type="file" name="image" />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap product-name">
+											<label for="product-name">Product name</label>
+											<br />
+											<input type="text" id="product-name" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap product-price">
+											<label for="product-price">Product price (Before Discount)</label>
+											<br />
+											<input type="text" id="product-price" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap discount-rate">
+											<label for="discount-rate">Discount Rate</label>
+											<br />
+											<input type="text" id="discount-rate" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap shipping-charge">
+											<label for="shipping-charge">Shipping Charge</label>
+											<br />
+											<input type="text" id="shipping-charge" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap color">
+											<label for="color">Color</label>
+											<br />
+											<input type="text" id="color" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap size">
+											<label for="size">Size</label>
+											<br />
+											<input type="text" id="size" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap active">
+											<label for="active" class="text">Active</label>
+											<input type="checkbox" id="active" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div>
+											<button id="create-product">Add Product</button>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div class="products">
+								<div class="product-add-button">
+									<button id="add-product">Add New Product</button>
+								</div>
+								<div class="product-list">
+									<div class="item">
+										<div class="image-warp">
+											<img src="/images/c.jpg" alt="" />
+										</div>
+										<div class="content">
+											<p class="product-name">Camera</p>
+											<div class="rate-wrap">
+												<p class="price">
+													<span class="currency">BDT.</span>
+													<span class="amount">2000</span>
+												</p>
+												<p class="discount-rate">
+													<span class="rate">10</span>
+													<span class="percentage">%</span>
+												</p>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>

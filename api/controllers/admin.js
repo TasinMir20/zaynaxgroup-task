@@ -506,9 +506,9 @@ exports.products = async (req, res, next) => {
 		let { skip, limit, search } = req.query;
 
 		skip = parseInt(skip, 10) || 0;
-		limit = parseInt(limit, 10) || 20;
+		limit = parseInt(limit, 10) || 100;
 
-		let foundProducts = await Product.find({ active: "yes" }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+		let foundProducts = await Product.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
 		foundProducts = JSON.parse(JSON.stringify(foundProducts));
 
 		for (const product of foundProducts) {

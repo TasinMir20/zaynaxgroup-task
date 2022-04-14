@@ -7,17 +7,22 @@ const cloudinary = require("cloudinary").v2;
  */
 const imageCheck = (image) => {
 	let accept, message;
-	if (image.type) {
-		const isImage = image.type.startsWith("image/");
-		if (!isImage) {
-			message = "Please upload only image files.";
-			return { accept: false, message };
+	if (image.size) {
+		if (image.type) {
+			const isImage = image.type.startsWith("image/");
+			if (!isImage) {
+				message = "Please upload only image files.";
+				return { accept: false, message };
+			} else {
+				accept = true;
+			}
 		} else {
-			accept = true;
+			accept = false;
+			message = `${image.fieldName} field is empty!`;
 		}
 	} else {
 		accept = false;
-		message = `${image.fieldName} field is empty!`;
+		message = `Please upload an product image!`;
 	}
 
 	return { accept, message };
@@ -30,7 +35,7 @@ const imageCheck = (image) => {
  * @returns promise
  */
 const upload = async (filePath) => {
-	return await cloudinary.uploader.upload(filePath);
+	return await cloudinary.uploader.upload(filePath, { width: 500, height: 500 });
 };
 
 module.exports = { imageCheck, upload };

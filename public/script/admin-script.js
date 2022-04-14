@@ -1,5 +1,7 @@
 const BASE_URL = window.origin;
 
+let path = window.location.pathname;
+
 function authorizationCheckUserDataLoad() {
 	const apiUrl = `${BASE_URL}/api/admin`;
 	fetch(apiUrl, {
@@ -17,7 +19,6 @@ function authorizationCheckUserDataLoad() {
 				console.log(data.user);
 				document.querySelector(".admin-content #user-name").innerHTML = data.user.username;
 				document.querySelector(".admin-content").classList.remove("hide");
-				orderListLoad();
 			} else {
 				document.querySelector(".admin-login").classList.remove("hide");
 			}
@@ -70,6 +71,7 @@ document.querySelector(".admin-login #sing-up").addEventListener("click", functi
 });
 
 function orderListLoad(status) {
+	history.pushState({}, null, window.location.origin + `/admin/orders`);
 	let apiUrl = `${BASE_URL}/api/admin/orders`;
 	window.orderListAllTab = true;
 	if (status) {
@@ -87,6 +89,9 @@ function orderListLoad(status) {
 			return res.json();
 		})
 		.then((data) => {
+			document.querySelector(".product-section").classList.add("hide");
+			document.querySelector(".order-section").classList.remove("hide");
+
 			const allLoadBtn = document.querySelector(".admin-content .order-section .all");
 			const pendingLoadBtn = document.querySelector(".admin-content .order-section .pending");
 			const confirmedLoadBtn = document.querySelector(".admin-content .order-section .confirmed");
@@ -141,6 +146,12 @@ function orderListLoad(status) {
 		});
 }
 
+path = path.replace(/^\/|\/$/g, ""); // remove first and last slash
+
+if (path === "admin/orders" || path === "admin") {
+	orderListLoad();
+}
+
 function orderAction(id, actionFor) {
 	let apiUrl = `${BASE_URL}/api/admin/orders-action/${id}/${actionFor}`;
 	fetch(apiUrl, {
@@ -172,3 +183,151 @@ function orderAction(id, actionFor) {
 			}
 		});
 }
+
+function productLoad() {
+	history.pushState({}, null, window.location.origin + `/admin/products`);
+	const apiUrl = `${BASE_URL}/api/admin/products`;
+	fetch(apiUrl, {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+		},
+		method: "GET",
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			console.log(data);
+			document.querySelector(".order-section").classList.add("hide");
+			document.querySelector(".product-section").classList.remove("hide");
+			document.querySelector(".product-section .product-add").classList.add("hide");
+			document.querySelector(".product-section .products").classList.remove("hide");
+
+			const products = data.products;
+
+			let itemsElement = "";
+			for (const product of products) {
+				itemsElement += `<div class="item">
+						<div class="image-warp">
+							<img src="${product.image}" alt="" />
+						</div>
+						<div class="content">
+							<p class="product-name">${product.name}</p>
+							<div class="rate-wrap">
+								<p class="price">
+									<span class="currency">BDT.</span>
+									<span class="amount">${product.priceAfterDiscount}</span>
+								</p>
+								<p class="discount-rate">
+									<span class="rate">${product.discountRate}</span>
+									<span class="percentage">%</span>
+								</p>
+							</div>
+						</div>
+					</div>`;
+			}
+
+			document.querySelector(".product-section .products .product-list").innerHTML = itemsElement;
+		});
+}
+
+document.querySelector(".left-side #products").addEventListener("click", productLoad);
+
+path = path.replace(/^\/|\/$/g, ""); // remove first and last slash
+if (path === "admin/products") {
+	productLoad();
+}
+
+document.querySelector("#add-product").addEventListener("click", function (e) {
+	document.querySelector(".product-section .products").classList.add("hide");
+	document.querySelector(".product-section .product-add").classList.remove("hide");
+});
+
+document.querySelector("#create-product").addEventListener("click", function (e) {
+	e.preventDefault();
+	const productImage = document.querySelector("#product-image");
+	const productName = document.querySelector("#product-name");
+	const productPrice = document.querySelector("#product-price");
+	const discountRate = document.querySelector("#discount-rate");
+	const shippingCharge = document.querySelector("#shipping-charge");
+	const color = document.querySelector("#color");
+	const size = document.querySelector("#size");
+	const active = document.querySelector("#active");
+
+	// console.log({ productImage: productImage.value, productName: productName.value, productPrice: productPrice.value, discountRate: discountRate.value, color: color.value, active: active.checked });
+
+	const form = document.querySelector("#product-add-form");
+	const formData = new FormData(form);
+	formData.append("image", productImage);
+	formData.append("name", productName.value);
+	formData.append("price", productPrice.value);
+	formData.append("discountRate", discountRate.value);
+	formData.append("shippingCharge", shippingCharge.value);
+	formData.append("color", color.value);
+	formData.append("size", size.value);
+	formData.append("active", active.checked ? "yes" : "no");
+
+	const apiUrl = `${BASE_URL}/api/admin/products-add`;
+	fetch(apiUrl, {
+		method: "POST",
+		headers: {
+			authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+		},
+		body: formData,
+	})
+		.then((response) => {
+			productImage.value = productImage.defaultValue;
+			return response.json();
+		})
+		.then((data) => {
+			if (data.addedProduct) {
+				document.querySelector(".product-section .product-add").classList.add("hide");
+				document.querySelector(".product-section .products").classList.remove("hide");
+				productLoad();
+			} else {
+				const issue = data.issue;
+				if (issue.image) {
+					document.querySelector(".image span.msg").innerHTML = issue.image;
+				} else {
+					document.querySelector(".image span.msg").innerHTML = "";
+				}
+				if (issue.name) {
+					document.querySelector(".product-name span.msg").innerHTML = issue.name;
+				} else {
+					document.querySelector(".product-name span.msg").innerHTML = "";
+				}
+
+				if (issue.price) {
+					document.querySelector(".product-price  span.msg").innerHTML = issue.price;
+				} else {
+					document.querySelector(".product-price  span.msg").innerHTML = "";
+				}
+
+				if (issue.discountRate) {
+					document.querySelector(".discount-rate  span.msg").innerHTML = issue.discountRate;
+				} else {
+					document.querySelector(".discount-rate  span.msg").innerHTML = "";
+				}
+
+				if (issue.shippingCharge) {
+					document.querySelector(".shipping-charge  span.msg").innerHTML = issue.shippingCharge;
+				} else {
+					document.querySelector(".shipping-charge  span.msg").innerHTML = "";
+				}
+
+				if (issue.color) {
+					document.querySelector(".color  span.msg").innerHTML = issue.color;
+				} else {
+					document.querySelector(".color  span.msg").innerHTML = "";
+				}
+
+				if (issue.size) {
+					document.querySelector(".size span.msg").innerHTML = issue.size;
+				} else {
+					document.querySelector(".size  span.msg").innerHTML = "";
+				}
+			}
+		});
+});
