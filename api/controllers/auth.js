@@ -94,3 +94,64 @@ exports.loginRegister = async (req, res, next) => {
 		next(err);
 	}
 };
+
+/**
+ * Admin Login
+ *
+ * @param {express.Request} req Express request object
+ * @param {express.Response} res Express response object
+ * @param {() => } next Express callback
+ ***/
+
+exports.adminLogin = async (req, res, next) => {
+	try {
+		let issue = {};
+		let { username, password } = req.body;
+
+		if (username && password) {
+			let user;
+			let userExits = await User.findOne({ username: username }).select("+password");
+			userExits = JSON.parse(JSON.stringify(userExits));
+			if (userExits) {
+				const matched = bcrypt.compareSync(password, userExits.password);
+				if (matched) {
+					userExits.password = undefined;
+					user = userExits;
+				} else {
+					issue.password = "Password is wrong!";
+				}
+			} else {
+				issue.username = "Invalid credentials!";
+			}
+
+			if (user) {
+				const sessionUUID = uuid();
+				const expireDate = new Date();
+				expireDate.setDate(expireDate.getDate() + 30);
+
+				const sessionStructure = new LoginSession({
+					user: user._id,
+					sessionUUID,
+					expireDate,
+				});
+
+				const session = await sessionStructure.save();
+
+				const adminJwtToken = createToken(session._id, sessionUUID);
+				return res.json({ adminJwtToken });
+			}
+		} else {
+			if (!username) {
+				issue.username = "Please enter your User ID!";
+			}
+
+			if (!password) {
+				issue.password = "Please enter password!";
+			}
+		}
+
+		return res.status(400).json({ issue });
+	} catch (err) {
+		next(err);
+	}
+};

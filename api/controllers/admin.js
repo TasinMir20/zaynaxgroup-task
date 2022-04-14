@@ -446,7 +446,7 @@ exports.orders = async (req, res, next) => {
 	try {
 		const issue = {};
 		skip = parseInt(skip, 10) || 0;
-		limit = parseInt(limit, 10) || 20;
+		limit = parseInt(limit, 10) || 100;
 
 		status = status ? status.toLowerCase() : status;
 		if (status) {
@@ -476,7 +476,10 @@ exports.ordersAction = async (req, res, next) => {
 		if (isValidObjectId(orderObjId)) {
 			status = status ? status.toLowerCase() : status;
 			if (status) {
-				if (["confirmed", "canceled"].includes(status)) {
+				if (["confirmed", "confirm", "canceled", "cancel"].includes(status)) {
+					status = status === "cancel" ? "canceled" : status;
+					status = status === "confirm" ? "confirmed" : status;
+
 					const orderUpdate = await Order.updateOne({ _id: orderObjId }, { status, reviewedBy: user._id });
 
 					if (orderUpdate.modifiedCount) {

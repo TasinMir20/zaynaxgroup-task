@@ -54,14 +54,34 @@ span.msg {
 
 /* defult valus end */
 
+@font-face {
+	font-family: "Axiforma-Light";
+	src: url("/fonts/Axiforma-Light.woff2") format("woff2"), url("/fonts/Axiforma-Light.woff") format("woff");
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Axiforma-Medium";
+	src: url("/fonts/Axiforma-Medium.woff2") format("woff2"), url("/fonts/Axiforma-Medium.woff") format("woff");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Axiforma-Regular";
+	src: url("/fonts/Axiforma-Regular.woff2") format("woff2"), url("/fonts/Axiforma-Regular.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
 .sections {
 	width: 100%;
 	overflow: hidden;
 	background: #fafafa 0% 0% no-repeat padding-box;
-}
-
-.sections .container {
-	margin: 0 auto;
 }
 
 img {
@@ -246,7 +266,8 @@ img {
 }
 
 .body-content .products .warp .item .content .product-name {
-	font: normal normal normal 18px/25px Axiforma;
+	font: normal normal normal 18px/25px;
+	font-family: Axiforma-Regular;
 	letter-spacing: 0.31px;
 	color: #4d4d4d;
 }
@@ -374,11 +395,15 @@ img {
 /* Login page END */
 
 /* Checkout page START */
+.checkout-page .container {
+	padding-bottom: 50px;
+}
 .checkout-page .container .go-back {
 	margin: 15px 0;
+	font-family: Axiforma-Regular;
 }
 .checkout-page .container .go-back a {
-	font-size: 16px;
+	font-size: 14px;
 	display: block;
 	width: 100px;
 	background: #ffffff 0% 0% no-repeat padding-box;
@@ -386,6 +411,7 @@ img {
 	border-radius: 23px;
 	padding: 15px;
 	cursor: pointer;
+	color: #1a1a1a;
 }
 
 .checkout-page .container .checkout-body {
@@ -412,11 +438,12 @@ img {
 	border-color: #dfdfdf;
 	border-style: solid;
 	position: relative;
+	font-family: Axiforma-Regular;
 }
 
 .checkout-page .container .checkout-body .product-details .item .inner-part {
 	width: 33%;
-	font-size: 18px;
+	font-size: 15px;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
@@ -508,7 +535,8 @@ img {
 	color: #060606;
 }
 .checkout-page .container .checkout-body .product-details .terms-contions .select label {
-	font: normal normal normal 18px/22px Axiforma;
+	font: normal normal normal 18px/22px;
+	font-family: Axiforma-Medium;
 	letter-spacing: 0px;
 	color: #1a1a1a;
 	user-select: none;

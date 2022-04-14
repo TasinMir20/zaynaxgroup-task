@@ -9,8 +9,102 @@
 		<link rel="stylesheet" href="/css/admin.css" />
 	</head>
 	<body>
-		<section class="sections order-place-msg hide">
-			<div class="container">Hello word!!</div>
+		<section class="master-section">
+			<section class="sections admin-login hide">
+				<div class="container">
+					<div class="mid">
+						<div>
+							<h3 class="head">Admin Panel</h3>
+						</div>
+						<div class="wrap">
+							<div class="user-id-wrap">
+								<label for="user-id">User ID</label>
+								<br />
+								<input id="user-id" type="text" />
+								<span class="msg"></span>
+							</div>
+							<div class="password-wrap">
+								<label for="password">Password</label>
+								<br />
+								<input id="password" type="password" />
+								<span class="msg"></span>
+							</div>
+							<div class="singup-wrap">
+								<button id="sing-up">Sign In</button>
+							</div>
+						</div>
+						<div class="info">
+							<h4>Use following credentials to login</h4>
+							<h4>User ID</h4>
+							<h5>Test_User2020</h5>
+							<h4>Password</h4>
+							<h5>Easy_123</h5>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section class="sections admin-content hide">
+				<header>
+					<div class="container">
+						<div class="header-wrap">
+							<div>
+								<a href="/"><img src="/images/logo.png" alt="" /></a>
+							</div>
+							<div class="username" id="user-name">UserName</div>
+						</div>
+					</div>
+				</header>
+				<div class="content">
+					<div class="left-side side">
+						<div class="wrap">
+							<div class="promotion-bar bar">
+								<p class="tab-switch" id="promotion">Promotion</p>
+								<div class="promotion-nested">
+									<p class="tab-switch" id="promo-code">Promo codes</p>
+									<p class="tab-switch" id="add-promo-code">Add Promo codes</p>
+								</div>
+							</div>
+							<div class="order-bar bar" onclick="orderListLoad()">
+								<p class="tab-switch" id="order">Orders</p>
+							</div>
+							<div class="product-bar bar">
+								<p class="tab-switch" id="products">Products</p>
+							</div>
+						</div>
+					</div>
+					<div class="right-side side">
+						<div class="order-section">
+							<div class="load-buttons">
+								<div class="btn all" onclick="orderListLoad()">All</div>
+								<div class="btn pending" onclick="orderListLoad('pending')">Pending</div>
+								<div class="btn confirmed" onclick="orderListLoad('confirmed')">Confirmed</div>
+								<div class="btn canceled" onclick="orderListLoad('canceled')">Cancelled</div>
+							</div>
+							<div class="order-list">
+								<div class="order-list-header">
+									<div>SL</div>
+									<div>Order No</div>
+									<div>Item Price</div>
+									<div>Action</div>
+									<div>Status</div>
+								</div>
+								<div id="list-wrap">
+									<div class="list-data">
+										<div class="quantity">1</div>
+										<div class="order-no">35564</div>
+										<div class="item-price">20000</div>
+										<div class="action">
+											<button id="do-confirm">Confirm</button>
+											<button id="do-cancel">Cancel</button>
+										</div>
+										<div class="status">Pending</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 		</section>
 		<script src="/script/admin-script.js"></script>
 	</body>
