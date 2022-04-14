@@ -344,7 +344,6 @@ span.msg {
 	padding: 15px 20px;
 	background-color: rgb(255, 255, 255);
 	border: 0;
-	background: #ffffff 0% 0% no-repeat padding-box;
 	box-shadow: 0px 3px 6px #8a8a8a19;
 	border-radius: 23px;
 	cursor: pointer;
@@ -518,6 +517,77 @@ span.msg {
 	margin-top: 20px;
 	cursor: pointer;
 	font-family: Axiforma-Regular;
+}
+
+/* promo-code-section */
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-add-button #add-promocode-btn {
+	padding: 15px 20px;
+	background-color: rgb(255, 255, 255);
+	border: 0;
+	box-shadow: 0px 3px 6px #8a8a8a19;
+	border-radius: 23px;
+	cursor: pointer;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item {
+	background-color: rgb(255, 255, 255);
+	box-shadow: 0px 3px 6px #8b8b8b29;
+	border-radius: 8px;
+	width: 100%;
+	margin-top: 30px;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .top {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	border-bottom: 1px solid rgb(226 226 226 / 73%);
+	padding: 20px;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .top .the-promo-code {
+	padding-top: 10px;
+	font-family: Axiforma-Regular;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .top .btns {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .top .btns button {
+	border-radius: 23px;
+	border: 0;
+	padding: 11px 30px;
+	cursor: pointer;
+	text-transform: capitalize;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .top .btns button:first-child {
+	margin-right: 15px;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .top .btns .edit {
+	background-color: #fff700;
+}
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .top .btns .active {
+	background-color: #fffee1;
+	color: #7a4100;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .top .btns .deactive {
+	background-color: #ffe1e1;
+	color: #ff0729;
+}
+
+.admin-content .content .right-side .promo-code-section .promocodes .promocodes-list .item .bottom {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 20px;
+	font-family: Axiforma-Light;
+	font-size: 14px;
 }
 
 @media all and (max-width: 1200px) {

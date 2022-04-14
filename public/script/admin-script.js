@@ -258,8 +258,6 @@ document.querySelector("#create-product").addEventListener("click", function (e)
 	const size = document.querySelector("#size");
 	const active = document.querySelector("#active");
 
-	// console.log({ productImage: productImage.value, productName: productName.value, productPrice: productPrice.value, discountRate: discountRate.value, color: color.value, active: active.checked });
-
 	const form = document.querySelector("#product-add-form");
 	const formData = new FormData(form);
 	formData.append("image", productImage);
@@ -347,7 +345,122 @@ function promoCodeLoad() {
 	document.querySelector(".order-section").classList.add("hide");
 	document.querySelector(".product-section").classList.add("hide");
 	document.querySelector(".promo-code-section").classList.remove("hide");
+	document.querySelector(".promo-code-section .promocode-add").classList.add("hide");
+	document.querySelector(".promo-code-section .promocodes").classList.remove("hide");
+
+	const apiUrl = `${BASE_URL}/api/admin/promo-codes`;
+	fetch(apiUrl, {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+		},
+		method: "GET",
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			const promoCodes = data.promoCodes;
+			if (promoCodes) {
+				let itemsElement = "";
+				for (const promoCode of promoCodes) {
+					let createdTime = promoCode.createdAt;
+					let startDate = promoCode.startDate;
+					let endDate = promoCode.endDate;
+					let activeDeactive = promoCode.active === "yes" ? "active" : "deactive";
+
+					createdTime = toDoLocaleString(createdTime);
+					startDate = toDoLocaleString(startDate).split(",")[1];
+					endDate = toDoLocaleString(endDate).split(",")[1];
+
+					function toDoLocaleString(timestamp) {
+						timestamp = new Date(timestamp);
+						let timeLocalString = timestamp.toLocaleString();
+						timeLocalString = timeLocalString.split(",");
+						timeLocalString = `${timeLocalString[1]}, ${timeLocalString[0]}`;
+						return timeLocalString;
+					}
+
+					itemsElement += `<div class="item">
+						<div class="top">
+							<div class="the-promo-code">
+								<p>${promoCode.code}</p>
+							</div>
+							<div class="btns">
+								<button class="edit">Edit</button>
+								<button onclick="promoCodeActiveDeactive(this, '${promoCode._id}')" class="${activeDeactive === "active" ? "deactive" : "active"}">${activeDeactive === "active" ? "deactive" : "active"}</button>
+							</div>
+						</div>
+						<div class="bottom">
+							<div class="">Created at: ${createdTime}</div>
+							<div class="usages-time">Usages: ${promoCode.usedTime}</div>
+							<div class="use-limit">Usages limit: ${promoCode.useTimeLimit}</div>
+							<div class="discount-rate">Discount Rate: ${promoCode.discountRate}%</div>
+							<div class="startt-date">Start Date: ${startDate}</div>
+							<div class="end-date">End Date: ${endDate}</div>
+						</div>
+					</div>`;
+				}
+
+				document.querySelector(".admin-content .right-side .promo-code-section .promocodes-list").innerHTML = itemsElement;
+			}
+		});
 }
 
 document.querySelector(".left-side #promotion").addEventListener("click", promoCodeLoad);
 document.querySelector(".left-side #promo-code").addEventListener("click", promoCodeLoad);
+
+function promoCodeActiveDeactive(self, id) {
+	const apiUrl = `${BASE_URL}/api/admin/promo-codes/${id}`;
+	fetch(apiUrl, {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+		},
+		method: "PUT",
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {
+			if (data.msg) {
+				if (data.msg === "activated") {
+					self.classList.remove("active");
+					self.classList.add("deactive");
+					self.innerHTML = "deactive";
+				} else if (data.msg === "deactivated") {
+					self.classList.remove("deactive");
+					self.classList.add("active");
+					self.innerHTML = "active";
+				}
+			}
+		});
+}
+
+function promoCodeAdd() {
+	history.pushState({}, null, window.location.origin + `/admin/promo-code`);
+	document.querySelector(".order-section").classList.add("hide");
+	document.querySelector(".product-section").classList.add("hide");
+	document.querySelector(".promo-code-section").classList.remove("hide");
+	document.querySelector(".promo-code-section .promocodes").classList.add("hide");
+	document.querySelector(".promo-code-section .promocode-add").classList.remove("hide");
+
+	const apiUrl = `${BASE_URL}/api/admin/promo-codes`;
+	fetch(apiUrl, {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+		},
+		method: "GET",
+	})
+		.then((response) => {
+			return response.json();
+		})
+		.then((data) => {});
+}
+
+document.querySelector("#add-promo-code").addEventListener("click", promoCodeAdd);
+document.querySelector("#add-promocode-btn").addEventListener("click", promoCodeAdd);

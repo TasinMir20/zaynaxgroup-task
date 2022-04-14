@@ -193,10 +193,10 @@ exports.promoCodes = async (req, res, next) => {
 		let { skip, limit } = req.query;
 
 		skip = parseInt(skip, 10) || 0;
-		limit = parseInt(limit, 10) || 20;
+		limit = parseInt(limit, 10) || 100;
 
 		const getPromoCode = await PromoCode.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
-		return res.json({ promoCode: getPromoCode });
+		return res.json({ promoCodes: getPromoCode });
 	} catch (err) {
 		next(err);
 	}
@@ -393,7 +393,6 @@ exports.promoCodesEdit = async (req, res, next) => {
 };
 
 exports.promoCodesActiveDeactive = async (req, res, next) => {
-	let { active } = req.body;
 	let { promoCodeId } = req.params;
 	try {
 		const issue = {};
@@ -401,7 +400,7 @@ exports.promoCodesActiveDeactive = async (req, res, next) => {
 		let isValidPromoCodeId, isValidActive;
 
 		if (isValidObjectId(promoCodeId)) {
-			const isExistPromoCode = await PromoCode.exists({ _id: promoCodeId });
+			var isExistPromoCode = await PromoCode.findOne({ _id: promoCodeId }).select("active");
 
 			if (isExistPromoCode) {
 				isValidPromoCodeId = true;
@@ -412,24 +411,12 @@ exports.promoCodesActiveDeactive = async (req, res, next) => {
 			issue.promoCodeId = "Invalid promo code id!";
 		}
 
-		// promo code active validation
-		active = active ? active.toLowerCase() : active;
-		if (active) {
-			if (["yes", "no"].includes(active)) {
-				isValidActive = true;
-			} else {
-				issue.active = "Invalid promo code active key!";
-			}
-		} else {
-			issue.active = "Please provide promo code active keyword!";
-		}
-
-		const propertiesValid = isValidPromoCodeId && isValidActive;
+		const propertiesValid = isValidPromoCodeId;
 
 		if (propertiesValid) {
-			const promoCodeUpdate = await PromoCode.updateOne({ _id: promoCodeId }, { active });
+			const promoCodeUpdate = await PromoCode.updateOne({ _id: promoCodeId }, { active: isExistPromoCode.active == "yes" ? "no" : "yes" });
 			if (promoCodeUpdate.modifiedCount) {
-				const state = active === "yes" ? "activated" : "deactivated";
+				const state = isExistPromoCode.active === "no" ? "activated" : "deactivated";
 				return res.json({ message: `Promo code successfully ${state}!`, msg: state });
 			} else {
 				issue.message = "Failed to update!";
