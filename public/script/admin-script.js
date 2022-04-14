@@ -47,7 +47,6 @@ document.querySelector(".admin-login #sing-up").addEventListener("click", functi
 			return res.json();
 		})
 		.then((data) => {
-			console.log(data);
 			if (!data.issue) {
 				localStorage.setItem("adminToken", data.adminJwtToken);
 
@@ -129,7 +128,7 @@ function orderListLoad(status) {
 				confirmedLoadBtn.classList.remove("color");
 				canceledLoadBtn.classList.add("color");
 			}
-			console.log(data);
+
 			if (data.order) {
 				let element = "";
 				for (const order of data.order) {
@@ -152,8 +151,6 @@ function orderListLoad(status) {
 				}
 
 				document.querySelector(".admin-content .order-section #list-wrap").innerHTML = element;
-			} else {
-				// document.querySelector(".admin-login").classList.remove("hide");
 			}
 		});
 }
@@ -172,8 +169,6 @@ function orderAction(id, actionFor) {
 			return res.json();
 		})
 		.then((data) => {
-			console.log(data);
-
 			if (data.message) {
 				if (!window.orderListAllTab) {
 					document.querySelector(`.admin-content .order-section #list-wrap .cl${id}`).remove();
@@ -192,6 +187,12 @@ function orderAction(id, actionFor) {
 
 function productLoad() {
 	history.pushState({}, null, window.location.origin + `/admin/products`);
+	document.querySelector(".order-section").classList.add("hide");
+	document.querySelector(".promo-code-section").classList.add("hide");
+	document.querySelector(".product-section").classList.remove("hide");
+	document.querySelector(".product-section .product-add").classList.add("hide");
+	document.querySelector(".product-section .products").classList.remove("hide");
+
 	const apiUrl = `${BASE_URL}/api/admin/products`;
 	fetch(apiUrl, {
 		headers: {
@@ -205,38 +206,32 @@ function productLoad() {
 			return response.json();
 		})
 		.then((data) => {
-			console.log(data);
-			document.querySelector(".order-section").classList.add("hide");
-			document.querySelector(".promo-code-section").classList.add("hide");
-			document.querySelector(".product-section").classList.remove("hide");
-			document.querySelector(".product-section .product-add").classList.add("hide");
-			document.querySelector(".product-section .products").classList.remove("hide");
-
-			const products = data.products;
-
-			let itemsElement = "";
-			for (const product of products) {
-				itemsElement += `<div class="item">
-						<div class="image-warp">
-							<img src="${product.image}" alt="" />
-						</div>
-						<div class="content">
-							<p class="product-name">${product.name}</p>
-							<div class="rate-wrap">
-								<p class="price">
-									<span class="currency">BDT.</span>
-									<span class="amount">${product.priceAfterDiscount}</span>
-								</p>
-								<p class="discount-rate">
-									<span class="rate">${product.discountRate}</span>
-									<span class="percentage">%</span>
-								</p>
+			if (data.products) {
+				const products = data.products;
+				let itemsElement = "";
+				for (const product of products) {
+					itemsElement += `<div class="item">
+							<div class="image-warp">
+								<img src="${product.image}" alt="" />
 							</div>
-						</div>
-					</div>`;
-			}
+							<div class="content">
+								<p class="product-name">${product.name}</p>
+								<div class="rate-wrap">
+									<p class="price">
+										<span class="currency">BDT.</span>
+										<span class="amount">${product.priceAfterDiscount}</span>
+									</p>
+									<p class="discount-rate">
+										<span class="rate">${product.discountRate}</span>
+										<span class="percentage">%</span>
+									</p>
+								</div>
+							</div>
+						</div>`;
+				}
 
-			document.querySelector(".product-section .products .product-list").innerHTML = itemsElement;
+				document.querySelector(".product-section .products .product-list").innerHTML = itemsElement;
+			}
 		});
 }
 
@@ -245,6 +240,26 @@ document.querySelector(".left-side .product-bar").addEventListener("click", prod
 document.querySelector("#add-product").addEventListener("click", function (e) {
 	document.querySelector(".product-section .products").classList.add("hide");
 	document.querySelector(".product-section .product-add").classList.remove("hide");
+
+	//  Add Product form input box clear
+	const img = document.querySelector("#product-image");
+	img.value = img.defaultValue;
+	document.querySelector("#product-name").value = "";
+	document.querySelector("#product-price").value = "";
+	document.querySelector("#discount-rate").value = "";
+	document.querySelector("#shipping-charge").value = "";
+	document.querySelector("#color").value = "";
+	document.querySelector("#size").value = "";
+	document.querySelector("#active").checked = false;
+
+	// Add Product form error message clear
+	document.querySelector("#product-add-form .image span.msg").innerHTML = "";
+	document.querySelector("#product-add-form .product-name span.msg").innerHTML = "";
+	document.querySelector("#product-add-form .product-price  span.msg").innerHTML = "";
+	document.querySelector("#product-add-form .discount-rate  span.msg").innerHTML = "";
+	document.querySelector("#product-add-form .shipping-charge  span.msg").innerHTML = "";
+	document.querySelector("#product-add-form .color  span.msg").innerHTML = "";
+	document.querySelector("#product-add-form .size  span.msg").innerHTML = "";
 });
 
 document.querySelector("#create-product").addEventListener("click", function (e) {
@@ -283,58 +298,50 @@ document.querySelector("#create-product").addEventListener("click", function (e)
 		.then((data) => {
 			if (data.addedProduct) {
 				productImage.value = productImage.defaultValue;
-				productName.value = "";
-				productPrice.value = "";
-				discountRate.value = "";
-				shippingCharge.value = "";
-				color.value = "";
-				size.value = "";
-				active.checked = false;
 
-				document.querySelector(".product-section .product-add").classList.add("hide");
-				document.querySelector(".product-section .products").classList.remove("hide");
+				overlayMessageShow("Your Product Added Successfully", 3000);
 				productLoad();
 			} else {
 				const issue = data.issue;
 				if (issue.image) {
-					document.querySelector(".image span.msg").innerHTML = issue.image;
+					document.querySelector("#product-add-form .image span.msg").innerHTML = issue.image;
 				} else {
-					document.querySelector(".image span.msg").innerHTML = "";
+					document.querySelector("#product-add-form .image span.msg").innerHTML = "";
 				}
 				if (issue.name) {
-					document.querySelector(".product-name span.msg").innerHTML = issue.name;
+					document.querySelector("#product-add-form .product-name span.msg").innerHTML = issue.name;
 				} else {
-					document.querySelector(".product-name span.msg").innerHTML = "";
+					document.querySelector("#product-add-form .product-name span.msg").innerHTML = "";
 				}
 
 				if (issue.price) {
-					document.querySelector(".product-price  span.msg").innerHTML = issue.price;
+					document.querySelector("#product-add-form .product-price  span.msg").innerHTML = issue.price;
 				} else {
-					document.querySelector(".product-price  span.msg").innerHTML = "";
+					document.querySelector("#product-add-form .product-price  span.msg").innerHTML = "";
 				}
 
 				if (issue.discountRate) {
-					document.querySelector(".discount-rate  span.msg").innerHTML = issue.discountRate;
+					document.querySelector("#product-add-form .discount-rate  span.msg").innerHTML = issue.discountRate;
 				} else {
-					document.querySelector(".discount-rate  span.msg").innerHTML = "";
+					document.querySelector("#product-add-form .discount-rate  span.msg").innerHTML = "";
 				}
 
 				if (issue.shippingCharge) {
-					document.querySelector(".shipping-charge  span.msg").innerHTML = issue.shippingCharge;
+					document.querySelector("#product-add-form .shipping-charge  span.msg").innerHTML = issue.shippingCharge;
 				} else {
-					document.querySelector(".shipping-charge  span.msg").innerHTML = "";
+					document.querySelector("#product-add-form .shipping-charge  span.msg").innerHTML = "";
 				}
 
 				if (issue.color) {
-					document.querySelector(".color  span.msg").innerHTML = issue.color;
+					document.querySelector("#product-add-form .color  span.msg").innerHTML = issue.color;
 				} else {
-					document.querySelector(".color  span.msg").innerHTML = "";
+					document.querySelector("#product-add-form .color  span.msg").innerHTML = "";
 				}
 
 				if (issue.size) {
-					document.querySelector(".size span.msg").innerHTML = issue.size;
+					document.querySelector("#product-add-form .size span.msg").innerHTML = issue.size;
 				} else {
-					document.querySelector(".size  span.msg").innerHTML = "";
+					document.querySelector("#product-add-form .size  span.msg").innerHTML = "";
 				}
 			}
 		});
@@ -397,7 +404,7 @@ function promoCodeLoad() {
 							<div class="usages-time">Usages: ${promoCode.usedTime}</div>
 							<div class="use-limit">Usages limit: ${promoCode.useTimeLimit}</div>
 							<div class="discount-rate">Discount Rate: ${promoCode.discountRate}%</div>
-							<div class="startt-date">Start Date: ${startDate}</div>
+							<div class="start-date">Start Date: ${startDate}</div>
 							<div class="end-date">End Date: ${endDate}</div>
 						</div>
 					</div>`;
@@ -439,13 +446,41 @@ function promoCodeActiveDeactive(self, id) {
 		});
 }
 
-function promoCodeAdd() {
+function promoCodeAddPageShow() {
 	history.pushState({}, null, window.location.origin + `/admin/promo-code`);
 	document.querySelector(".order-section").classList.add("hide");
 	document.querySelector(".product-section").classList.add("hide");
 	document.querySelector(".promo-code-section").classList.remove("hide");
 	document.querySelector(".promo-code-section .promocodes").classList.add("hide");
 	document.querySelector(".promo-code-section .promocode-add").classList.remove("hide");
+
+	// Add Promo code form input box clear
+	document.querySelector("#promo-code-in").value = "";
+	document.querySelector("#discount-rate-in").value = "";
+	document.querySelector("#use-time-in").value = "";
+	document.querySelector("#p-active").checked = false;
+
+	// Add Promo code form error message clear
+	document.querySelector("#promo-code-add-form .promo-code span.msg").innerHTML = "";
+	document.querySelector("#promo-code-add-form .start-date span.msg").innerHTML = "";
+	document.querySelector("#promo-code-add-form .end-date span.msg").innerHTML = "";
+	document.querySelector("#promo-code-add-form .discount-rate span.msg").innerHTML = "";
+	document.querySelector("#promo-code-add-form .use-time span.msg").innerHTML = "";
+	document.querySelector("#promo-code-add-form .active span.msg").innerHTML = "";
+}
+
+document.querySelector("#add-promo-code").addEventListener("click", promoCodeAddPageShow);
+document.querySelector("#add-promocode-btn").addEventListener("click", promoCodeAddPageShow);
+
+function addPromoCode(e) {
+	e.preventDefault();
+
+	const thePromoCode = document.querySelector("#promo-code-in");
+	const startDate = document.querySelector("#start-date-picker span");
+	const endDate = document.querySelector("#end-date-picker span");
+	const discountRate = document.querySelector("#discount-rate-in");
+	const useTime = document.querySelector("#use-time-in");
+	const active = document.querySelector("#p-active");
 
 	const apiUrl = `${BASE_URL}/api/admin/promo-codes`;
 	fetch(apiUrl, {
@@ -454,13 +489,67 @@ function promoCodeAdd() {
 			"Content-Type": "application/json",
 			authorization: `Bearer ${localStorage.getItem("adminToken")}`,
 		},
-		method: "GET",
+		method: "POST",
+		body: JSON.stringify({
+			theCode: thePromoCode.value,
+			startDate: startDate.innerText,
+			endDate: endDate.innerText,
+			discountRate: discountRate.value,
+			useTimeLimit: useTime.value,
+			active: active.checked ? "yes" : "no",
+		}),
 	})
 		.then((response) => {
 			return response.json();
 		})
-		.then((data) => {});
+		.then((data) => {
+			if (data.addedPromoCode) {
+				overlayMessageShow("Your Promo Code Added Successfully", 3000);
+				promoCodeLoad();
+				console.log(data.addedPromoCode);
+			} else {
+				const issue = data.issue;
+				if (issue.theCode) {
+					document.querySelector("#promo-code-add-form .promo-code span.msg").innerHTML = issue.theCode;
+				} else {
+					document.querySelector("#promo-code-add-form .promo-code span.msg").innerHTML = "";
+				}
+				if (issue.startDate) {
+					document.querySelector("#promo-code-add-form .start-date span.msg").innerHTML = issue.startDate;
+				} else {
+					document.querySelector("#promo-code-add-form .start-date span.msg").innerHTML = "";
+				}
+				if (issue.endDate) {
+					document.querySelector("#promo-code-add-form .end-date span.msg").innerHTML = issue.endDate;
+				} else {
+					document.querySelector("#promo-code-add-form .end-date span.msg").innerHTML = "";
+				}
+				if (issue.discountRate) {
+					document.querySelector("#promo-code-add-form .discount-rate span.msg").innerHTML = issue.discountRate;
+				} else {
+					document.querySelector("#promo-code-add-form .discount-rate span.msg").innerHTML = "";
+				}
+				if (issue.useTimeLimit) {
+					document.querySelector("#promo-code-add-form .use-time span.msg").innerHTML = issue.useTimeLimit;
+				} else {
+					document.querySelector("#promo-code-add-form .use-time span.msg").innerHTML = "";
+				}
+
+				if (issue.active) {
+					document.querySelector("#promo-code-add-form .active span.msg").innerHTML = issue.active;
+				} else {
+					document.querySelector("#promo-code-add-form .active span.msg").innerHTML = "";
+				}
+			}
+		});
 }
 
-document.querySelector("#add-promo-code").addEventListener("click", promoCodeAdd);
-document.querySelector("#add-promocode-btn").addEventListener("click", promoCodeAdd);
+document.querySelector("#create-promo-code").addEventListener("click", addPromoCode);
+
+function overlayMessageShow(message, duration) {
+	document.querySelector(".form-submit-overlay-message .wrap .msg").innerHTML = message;
+	document.querySelector(".form-submit-overlay-message").classList.remove("hide");
+	setTimeout(() => {
+		document.querySelector(".form-submit-overlay-message").classList.add("hide");
+	}, duration);
+}

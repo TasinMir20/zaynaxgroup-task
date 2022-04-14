@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
 		<link rel="stylesheet" href="/fontawesome-free-6.1.1-web/css/all.min.css" />
+		<link href="/css/third-party-module/datetimepicker.css" rel="stylesheet" />
 		<link rel="stylesheet" href="/css/admin.css" />
 	</head>
 	<body>
@@ -197,7 +198,56 @@
 						</div>
 						<div class="promo-code-section hide">
 							<div class="promocode-add hide">
-								<h1>Add promo code section</h1>
+								<div class="wrap">
+									<form action="" id="promo-code-add-form" method="post">
+										<div class="input-wrap promo-code">
+											<label for="promo-code-in">Promo Code</label>
+											<br />
+											<input type="text" id="promo-code-in" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap start-date">
+											<label for="start-date-in">Start date</label>
+											<br />
+											<input type="hidden" id="start-date-in" />
+											<div id="start-date-picker"></div>
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap end-date">
+											<label for="end-date-in">End date</label>
+											<br />
+											<input type="hidden" id="end-date-in" />
+											<div id="end-date-picker"></div>
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap discount-rate">
+											<label for="discount-rate-in">Discount Rate</label>
+											<br />
+											<input type="text" id="discount-rate-in" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap use-time">
+											<label for="use-time-in">Use Time</label>
+											<br />
+											<input type="text" id="use-time-in" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div class="input-wrap active">
+											<label for="p-active" class="text">Active</label>
+											<input type="checkbox" id="p-active" />
+											<br />
+											<span class="msg"></span>
+										</div>
+										<div>
+											<button id="create-promo-code">Add</button>
+										</div>
+									</form>
+								</div>
 							</div>
 							<div class="promocodes hide">
 								<div class="promocodes-add-button">
@@ -219,7 +269,7 @@
 											<div class="usages-time">Usages: 6</div>
 											<div class="use-limit">Usages limit: 100</div>
 											<div class="discount-rate">Discount Rate: 5%</div>
-											<div class="startt-date">Start Date: 1/11/2020</div>
+											<div class="start-date">Start Date: 1/11/2020</div>
 											<div class="end-date">End Date: 3/11/2020</div>
 										</div>
 									</div> -->
@@ -229,7 +279,34 @@
 					</div>
 				</div>
 			</section>
+			<section class="sections form-submit-overlay-message hide">
+				<div class="wrap">
+					<div class="icon">
+						<i class="fa-solid fa-circle-check"></i>
+					</div>
+					<div class="msg">Default message!</div>
+				</div>
+			</section>
 		</section>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment-with-locales.min.js"></script>
+		<script src="/script/third-party-module/datetimepicker.js"></script>
+		<script>
+			$("#start-date-picker").dateTimePicker({
+				selectData: "now",
+				positionShift: { top: 40, left: -20 },
+				dateFormat: "MM-DD-YYYY",
+				title: "Select Date",
+				showTime: false,
+			});
+			$("#end-date-picker").dateTimePicker({
+				selectData: "now",
+				positionShift: { top: 40, left: -20 },
+				dateFormat: "MM-DD-YYYY",
+				title: "Select Date",
+				showTime: false,
+			});
+		</script>
 		<script src="/script/admin-script.js"></script>
 	</body>
 </html>

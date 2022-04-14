@@ -421,7 +421,7 @@ span.msg {
 }
 
 .admin-content .content .right-side .product-section .product-add .inner form {
-	padding: 30px;
+	padding: 25px;
 	font-family: Axiforma-Regular;
 	font-size: 15px;
 }
@@ -477,6 +477,7 @@ span.msg {
 
 .admin-content .content .right-side .product-section .product-add .inner form label {
 	user-select: none;
+	text-transform: capitalize;
 }
 
 .admin-content .content .right-side .product-section .product-add .inner form .input-wrap input {
@@ -519,7 +520,84 @@ span.msg {
 	font-family: Axiforma-Regular;
 }
 
-/* promo-code-section */
+/* promo-code-section - START */
+
+/* promo-code add section - START */
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap {
+	width: 300px;
+	min-height: 500px;
+	margin: 0 auto;
+	background: #ffffff 0% 0% no-repeat padding-box;
+	box-shadow: 0px 3px 6px #0000001c;
+	border-radius: 15px;
+}
+
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap #promo-code-add-form {
+	padding: 25px;
+	font-family: Axiforma-Regular;
+	font-size: 15px;
+}
+
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap form .input-wrap {
+	overflow: hidden;
+	margin-top: 15px;
+}
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap form .input-wrap:first-child {
+	margin-top: 0;
+}
+
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap form label {
+	user-select: none;
+	text-transform: capitalize;
+}
+
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap form .input-wrap input {
+	background: #ffffff 0% 0% no-repeat padding-box;
+	border: 1px solid #e8e8e8;
+	border-radius: 3px;
+	width: 100%;
+	padding: 9px 10px;
+	outline: none;
+}
+
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap form .active label {
+	cursor: pointer;
+	float: left;
+}
+
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap form .active input {
+	float: right;
+	width: 20px;
+	font-size: 20px;
+	min-width: 0.75em;
+	min-height: 20px;
+	margin-right: 0.75em;
+	border: 2px solid currentColor;
+	border-radius: 50%;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.admin-content .content .right-side .promo-code-section .promocode-add .wrap form #create-promo-code {
+	background-color: #fff700;
+	border: 0;
+	padding: 10px;
+	width: 50%;
+	margin: 0 auto;
+	display: block;
+	border-radius: 23px;
+	margin-top: 20px;
+	cursor: pointer;
+	font-family: Axiforma-Regular;
+}
+
+.dtp_modal-content {
+	width: 300px;
+}
+
+/* promo-code add section - END */
+
+/* promo-code list section - START */
 .admin-content .content .right-side .promo-code-section .promocodes .promocodes-add-button #add-promocode-btn {
 	padding: 15px 20px;
 	background-color: rgb(255, 255, 255);
@@ -589,6 +667,49 @@ span.msg {
 	font-family: Axiforma-Light;
 	font-size: 14px;
 }
+/* promo-code list section - END */
+
+/* promo-code-section - END */
+
+/* form submit overlay message - START */
+.form-submit-overlay-message {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background-color: #00000078;
+	backdrop-filter: blur(8px);
+}
+.form-submit-overlay-message .wrap {
+	background-color: #ffffff;
+	box-shadow: 0px 3px 6px #bfbfbf28;
+	border-radius: 10px;
+	width: 330px;
+	height: 281px;
+	padding: 50px;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+.form-submit-overlay-message .wrap i {
+	font-size: 35px;
+}
+.form-submit-overlay-message .wrap .msg {
+	font: normal normal normal 22px/20px Axiforma;
+	letter-spacing: 0px;
+	color: #1a1a1a;
+	font-size: 17px;
+	font-family: Axiforma-Regular;
+	line-height: 25px;
+}
+
+/* form submit overlay message - END */
 
 @media all and (max-width: 1200px) {
 	.admin-content .content .right-side .product-section .products .product-list {
