@@ -1,6 +1,7 @@
 const BASE_URL = window.origin;
 
 let path = window.location.pathname;
+path = path.replace(/^\/|\/$/g, ""); // remove first and last slash
 
 function authorizationCheckUserDataLoad() {
 	const apiUrl = `${BASE_URL}/api/admin`;
@@ -70,10 +71,20 @@ document.querySelector(".admin-login #sing-up").addEventListener("click", functi
 		});
 });
 
+if (path === "admin/orders" || path === "admin") {
+	orderListLoad();
+} else if (path === "admin/products") {
+	productLoad();
+} else if (path === "admin/promo-code") {
+	promoCodeLoad();
+}
+
 function orderListLoad(status) {
 	history.pushState({}, null, window.location.origin + `/admin/orders`);
 	let apiUrl = `${BASE_URL}/api/admin/orders`;
 	window.orderListAllTab = true;
+
+	console.log(status);
 	if (status) {
 		apiUrl = `${BASE_URL}/api/admin/orders?status=${status}`;
 		window.orderListAllTab = false;
@@ -90,6 +101,7 @@ function orderListLoad(status) {
 		})
 		.then((data) => {
 			document.querySelector(".product-section").classList.add("hide");
+			document.querySelector(".promo-code-section").classList.add("hide");
 			document.querySelector(".order-section").classList.remove("hide");
 
 			const allLoadBtn = document.querySelector(".admin-content .order-section .all");
@@ -146,12 +158,6 @@ function orderListLoad(status) {
 		});
 }
 
-path = path.replace(/^\/|\/$/g, ""); // remove first and last slash
-
-if (path === "admin/orders" || path === "admin") {
-	orderListLoad();
-}
-
 function orderAction(id, actionFor) {
 	let apiUrl = `${BASE_URL}/api/admin/orders-action/${id}/${actionFor}`;
 	fetch(apiUrl, {
@@ -201,6 +207,7 @@ function productLoad() {
 		.then((data) => {
 			console.log(data);
 			document.querySelector(".order-section").classList.add("hide");
+			document.querySelector(".promo-code-section").classList.add("hide");
 			document.querySelector(".product-section").classList.remove("hide");
 			document.querySelector(".product-section .product-add").classList.add("hide");
 			document.querySelector(".product-section .products").classList.remove("hide");
@@ -233,12 +240,7 @@ function productLoad() {
 		});
 }
 
-document.querySelector(".left-side #products").addEventListener("click", productLoad);
-
-path = path.replace(/^\/|\/$/g, ""); // remove first and last slash
-if (path === "admin/products") {
-	productLoad();
-}
+document.querySelector(".left-side .product-bar").addEventListener("click", productLoad);
 
 document.querySelector("#add-product").addEventListener("click", function (e) {
 	document.querySelector(".product-section .products").classList.add("hide");
@@ -278,11 +280,19 @@ document.querySelector("#create-product").addEventListener("click", function (e)
 		body: formData,
 	})
 		.then((response) => {
-			productImage.value = productImage.defaultValue;
 			return response.json();
 		})
 		.then((data) => {
 			if (data.addedProduct) {
+				productImage.value = productImage.defaultValue;
+				productName.value = "";
+				productPrice.value = "";
+				discountRate.value = "";
+				shippingCharge.value = "";
+				color.value = "";
+				size.value = "";
+				active.checked = false;
+
 				document.querySelector(".product-section .product-add").classList.add("hide");
 				document.querySelector(".product-section .products").classList.remove("hide");
 				productLoad();
@@ -331,3 +341,13 @@ document.querySelector("#create-product").addEventListener("click", function (e)
 			}
 		});
 });
+
+function promoCodeLoad() {
+	history.pushState({}, null, window.location.origin + `/admin/promo-code`);
+	document.querySelector(".order-section").classList.add("hide");
+	document.querySelector(".product-section").classList.add("hide");
+	document.querySelector(".promo-code-section").classList.remove("hide");
+}
+
+document.querySelector(".left-side #promotion").addEventListener("click", promoCodeLoad);
+document.querySelector(".left-side #promo-code").addEventListener("click", promoCodeLoad);

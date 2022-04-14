@@ -10,3 +10,5 @@
 6. To Run project in production mode `npm start`
 
 <b>NOTE:</b> Without setting environment variable, there is no guarantee that this apps can run smoothly.
+
+App Live link: https://task-tasin-zaynaxgroup.herokuapp.com
