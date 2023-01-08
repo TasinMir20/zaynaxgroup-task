@@ -11,4 +11,4 @@
 
 <b>NOTE:</b> Without setting environment variable, there is no guarantee that this apps can run smoothly.
 
-App Live link: https://task-tasin-zaynaxgroup.herokuapp.com
+App Live link: https://zaynaxgroup-task-production.up.railway.app
